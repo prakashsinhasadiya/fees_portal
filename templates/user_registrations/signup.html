@@ -4,125 +4,90 @@
 {% block title %}<title>User Registration Portal</title>{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row main">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-5"/>
-            <div class="main-login main-center">
-                <h4 style="text-align: center;"><b>User Registration Portal</b></h4>
-                <form class="text-center" id="userdetails" method="post">
+ <div class="main">
+        <div class="container">
+            <div class="signup-content">
+                <form method="" id="signup-form" class="signup-form">
                     {% csrf_token %}
-                    <input type="hidden" id="user_id" name="default_user_id">
+                    <h2>Sign up </h2>
                     <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.first_name}}
-                                </span>
-                            </div>
+                            <span>
+                                {{form.first_name}}
+                            </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.last_name}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.username}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.email}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.mobile}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.dob}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.address}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                       <span>
+                                {{form.password_1}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.password_2}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.institute}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>
+                                {{form.branch}}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <div style="padding-right:  1px"> 
+                            <label class="radio-inline">
+                                <h4>Genders</h4>                               
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="id_gender_0" value="M" required/>
+                                   Male
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="id_gender_1" value="F" required/>
+                                   Female
+                            </label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.last_name}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.username}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.email}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.mobile }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.dob}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.password_1}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>div class="form-group">
-                        <div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                <span>
-                                    {{form.password_2}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div>
-                            <div style="padding-right:  1px"> 
-                                <label class="radio-inline">
-                                    <h4>Genders</h4>                               
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="gender" id="id_gender_0" value="M" required/>
-                                       Male
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="gender" id="id_gender_1" value="F" required/>
-                                       Female
-                                </label>
-                            </div>
-                        </div>  
-                    </div>
-                    <div class="form-group">
-                        <div id="general_errors" class="general_error danger">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <button class="btn btn-primary btn-lg btn-block signup-button" type="submit">
-                                Sign Up
-                            </button>
-                        </div>
+                        <input type="submit" name="submit" id="submit" class="form-submit submit" value="Sign up"/>
+                        <a href='{% url "login" %}' class="submit-link submit">Sign in</a>
                     </div>
                 </form>
             </div>
         </div>
+
     </div>
-</div>
+
 {% endblock %}
