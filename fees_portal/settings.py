@@ -69,7 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fees_portal.wsgi.application'
 
-AUTH_USER_MODEL = 'cust_auth.Userone'
+# AUTH_USER_MODEL = 'cust_auth.Userone'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -77,7 +77,7 @@ AUTH_USER_MODEL = 'cust_auth.Userone'
 DATABASES = {
     'default': {
     	'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'prakash1.db'),
+        'NAME': os.path.join(BASE_DIR, 'prakashsinh.db'),
         # 'ENGINE': 'django.db.backends.mysql',
         # 'NAME': 'fees_payment',
         # 'USER': 'prakash',
@@ -118,7 +118,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+FEES_PAYMENT = '/fees_payment'
+LOGIN_URL = "/"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 

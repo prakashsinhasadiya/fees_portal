@@ -4,90 +4,223 @@
 {% block title %}<title>User Registration Portal</title>{% endblock %}
 
 {% block content %}
- <div class="main">
-        <div class="container">
-            <div class="signup-content">
-                <form method="" id="signup-form" class="signup-form">
-                    {% csrf_token %}
-                    <h2>Sign up </h2>
-                    <div class="form-group">
+<div class="container">
+    <div class="row main">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-5"/>
+        <div class="main-login main-center">
+            <h4 style="text-align: center;"><b>User Signup Form</b></h4>
+            <form class="text-center" id="userdetails" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.first_name}}
                             </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.last_name}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.username}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.email}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.mobile}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.dob}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.address}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                       <span>
-                                {{form.password_1}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.password_2}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.institute}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span>
-                                {{form.branch}}
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <div style="padding-right:  1px"> 
-                            <label class="radio-inline">
-                                <h4>Genders</h4>                               
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="gender" id="id_gender_0" value="M" required/>
-                                   Male
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="gender" id="id_gender_1" value="F" required/>
-                                   Female
-                            </label>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <input type="submit" name="submit" id="submit" class="form-submit submit" value="Sign up"/>
-                        <a href='{% url "login" %}' class="submit-link submit">Sign in</a>
+                    {%if 'first_name' in errors%}
+                        <div class='alert alert-warning'>{{errors.first_name}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.last_name}}
+                            </span>
+                        </div>
                     </div>
-                </form>
-            </div>
-        </div>
+                    {%if 'last_name' in errors%}
+                        <div class='alert alert-warning'>{{errors.last_name}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.username}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'username' in errors%}
+                        <div class='alert alert-warning'>{{errors.username}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.email}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'email' in errors%}
+                        <div class='alert alert-warning'>{{errors.email}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.mobile}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'mobile' in errors%}
+                        <div class='alert alert-warning'>{{errors.mobile}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.dob }}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'dob' in errors%}
+                        <div class='alert alert-warning'>{{errors.dob}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.address}}
+                            </span>
+                        </div>
+                        {%if 'address' in errors%}
+                        <div class='alert alert-warning'>{{errors.address}}</div>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.institute}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'institute' in errors%}
+                        <div class='alert alert-warning'>{{errors.institute}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.branch}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'branch' in errors%}
+                        <div class='alert alert-warning'>{{errors.branch}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.course}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'course' in errors%}
+                        <div class='alert alert-warning'>{{errors.course}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.enrollment}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'enrollment' in errors%}
+                        <div class='alert alert-warning'>{{errors.enrollment}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.password_1}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'password_1' in errors%}
+                        <div class='alert alert-warning'>{{errors.password_1}}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span>
+                                {{form.password_2}}
+                            </span>
+                        </div>
+                    </div>
+                    {%if 'password_2' in errors%}
+                        <div class='alert alert-warning'>{{errors.password_2}}</div>
+                    {% endif %}
+                </div>
+                <div>
+                    <div>
+                    <div style="padding-right:  1px"> 
+                    <label class="radio-inline">
 
+                        <h4>Genders</h4>                               
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="gender" id="id_gender_0" value="M" required/>
+                                   Male
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="gender" id="id_gender_1" value="F" required/>
+                                   Female
+                        </label>
+                    </div>
+                    </div>  
+                </div>
+                 {%if 'general_error' in errors%}
+                    <div class='alert alert-warning'>{{errors.general_error}}</div>
+                {% endif %}
+                <div class="form-group">
+                    <input type="submit" name="submit" id="submit" class="form-submit submit" value="Sign up"/>
+                </div>           
+                <div class="text-center">
+                    <span>
+                        You have an account?
+                    </span>
+                    <a href='{% url "login" %}'>
+                        Login
+                    </a><br/>
+                    <span>
+                        Rese your password?
+                    </span>
+                    <a href='{% url "reset_password" %}'>
+                        Reset Password
+                    </a><br/>
+                </div>
+         </form>
+      </div>
     </div>
-
+  </div>
 {% endblock %}

@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
 # Register your models here.
-from cust_auth.models import InstituteRecord, InstituteBranch,InstituteFees,Userone
+from django.contrib.auth.models import User
+from cust_auth.models import InstituteRecord, InstituteBranch,InstituteFees,StudentProfile
 
 # Register your models here.
 
@@ -18,15 +18,24 @@ class InstituteBranchAdmin(admin.ModelAdmin):
 
 class InstituteFeesAdmin(admin.ModelAdmin):
 
-	list_display =['fees_type','amount','is_active']
-	search_fields = ['fees_type','amount','is_active']
+    list_display =['fees_type','amount','is_active']
+    search_fields = ['fees_type','amount','is_active']
 
-# class StudentProfileAdmin(admin.ModelAdmin):
 
-# 	list_display = ['first_name','last_name','email','enrollment','mobile','dob','gender','branch','course','address','is_active']
-# 	search_fields = ['username','email','is_active']
+
+class StudentProfileAdmin(admin.StackedInline):
+
+    model = StudentProfile
+    fk_name = 'user'
+
+class UserAdmin(UserAdmin):
+
+    inlines = [StudentProfileAdmin]
+        # list_display = ['enrollment','mobile','dob','gender','branch','course','address','is_active']
+    # search_fields = ['username','email','is_active']
 
 admin.site.register(InstituteRecord, InstituteRecordAdmin)
 admin.site.register(InstituteBranch, InstituteBranchAdmin)
 admin.site.register(InstituteFees,InstituteFeesAdmin)
-admin.site.register(Userone)
+admin.site.unregister(User)
+admin.site.register(User,UserAdmin)

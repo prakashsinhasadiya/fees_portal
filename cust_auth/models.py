@@ -56,19 +56,17 @@ class InstituteFees(TimeStampedModel):
     amount = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
-class Userone(AbstractUser):
+class StudentProfile(TimeStampedModel):
 
     class Meta:
         unique_together = ("enrollment", "branch")
          
     
-    # user = models.OnTeoOneField(User, on_delete=models.CASCADE)
-    # first_name = models.CharField(max_length=20)
-    # last_name = models.CharField(max_length=20)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_regex = RegexValidator(
         regex=r'^(\+\d{1,3})?,?\s?\d{8,13}', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     mobile = models.CharField(validators=[phone_regex],max_length=17)
-    # email = models.EmailField(max_length=70,blank=True)
     enrollment = models.CharField(max_length=30)
     branch = models.ForeignKey(InstituteBranch,on_delete=models.CASCADE,related_name='student_branch',null=True)
     
@@ -78,8 +76,8 @@ class Userone(AbstractUser):
     ('pharmacy','PHARMACY'),
     ))
     
-    course = models.CharField(max_length=6, choices=COURSE_CHOICES, default='be')
-    dob = models.DateField(max_length=8,default=datetime.now())
+    course = models.CharField(max_length=8, choices=COURSE_CHOICES, default='be')
+    dob = models.DateField(null=True)
     
     GENDER_CHOICES = ((
     ('male','MALE'),
