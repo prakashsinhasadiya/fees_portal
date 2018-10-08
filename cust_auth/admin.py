@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
 from django.contrib.auth.models import User
-from cust_auth.models import InstituteRecord, InstituteBranch,InstituteFees,StudentProfile
+from cust_auth.models import InstituteRecord, InstituteBranch,InstituteFees,StudentProfile,PasswordResetTokens
 
 # Register your models here.
 
@@ -33,9 +33,13 @@ class UserAdmin(UserAdmin):
     inlines = [StudentProfileAdmin]
         # list_display = ['enrollment','mobile','dob','gender','branch','course','address','is_active']
     # search_fields = ['username','email','is_active']
+class PasswordResetTokensAdmin(admin.ModelAdmin):
+    list_display = ['user', 'token']
+
 
 admin.site.register(InstituteRecord, InstituteRecordAdmin)
 admin.site.register(InstituteBranch, InstituteBranchAdmin)
 admin.site.register(InstituteFees,InstituteFeesAdmin)
 admin.site.unregister(User)
 admin.site.register(User,UserAdmin)
+admin.site.register(PasswordResetTokens, PasswordResetTokensAdmin)

@@ -4,14 +4,23 @@ from django.views import View
 from django.shortcuts import render
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render
-from cust_auth.forms import LoginForm, SignupForm,ResetPasswordForm
+from cust_auth.forms import LoginForm, SignupForm,ResetPasswordForm,ConfirmPasswordForm,FeesPaymentForm
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.shortcuts import redirect
-from cust_auth.models import InstituteBranch,StudentProfile
+from django.core.mail import send_mail
+from django.urls import reverse
+from cust_auth.models import InstituteBranch,StudentProfile,PasswordResetTokens
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse,HttpResponse
 import json
+import uuid
+from django.http import Http404
+from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+
+
 # Create your views here.
 
 fess_payment_url = settings.FEES_PAYMENT or '/admin'
@@ -59,10 +68,8 @@ class Signup(View):
         Return signup template
         """
         if request.user.is_authenticated:
-            pass
-            # return redirect(login_redirect_url)
+            return redirect(login_redirect_url)
         form = SignupForm()
-        import pdb; pdb.set_trace()
         return render(request, 'user_registrations/signup.html', {'form': form})
     def post(self, request):
         """
@@ -129,39 +136,97 @@ def get_branch(request):
     # branches = {'id':data.values('id'),'name':data.values('name')}
     # for branch in branches:
 
-
-
-class FeesPayment(View):
-
-    def get(self,request):
-        import pdb; pdb.set_trace()
-
 class ResetPassword(View):
 
     def get(self,request):
-        import pdb; pdb.set_trace()
         form = ResetPasswordForm()
         return render(request, 'user_registrations/reset_password.html', {'form': form})
 
     def  post(self,request):
 
         reset_password_form = ResetPasswordForm(request.POST)
+        import pdb; pdb.set_trace()
         if not reset_password_form.is_valid():
             return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': reset_password_form.errors})
+       
+        def user_send_mail(self, user):
+
+            token_obj = PasswordResetTokens.objects.create(
+                user=user[0], token=uuid.uuid4().hex)
+            url = ''
+            url += request.get_host()
+            url += '/set_password'
+            url += '?token=' + token_obj.token
+            # data = {'token' : token_obj.token}
+            message = render_to_string('user_registrations/reset_password_email_template.html', {
+                'user': user[0],
+                'url': url,
+            })
+            res = send_mail('Password Reset', message, settings.FROM_EMAIL, [user[0].email], fail_silently=False)
+
         username = reset_password_form.cleaned_data.get('username')
-        user = User.objects.filter(username=username)
-        if not user:
-            return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': {'general_error': 'User doesnot exist.'}})
-        token_obj = PasswordResetTokens.objects.create(
-            user=user[0], token=uuid.uuid4().hex)
-        url = ''
-        url += request.get_host()
-        url += '/set_password'
-        url += '?token=' + token_obj.token
-        # data = {'token' : token_obj.token}
-        message = render_to_string('user_registrations/reset_password_email_template.html', {
-            'user': user[0],
-            'url': url,
-        })
-        res = send_mail('Password Reset', message, settings.FROM_EMAIL, [user[0].email])
-        return render(request, 'user_registrations/reset_email_sent.html')
+        user_email = User.objects.filter(email=username)
+        if not user_email:
+            user= User.objects.filter(username=username)
+            if not user:
+                return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': {'general_error': 'User doesnot exist.'}})
+            else:
+                user_send_mail(self,user)
+                return render(request, 'user_registrations/email_send.html')
+        else:
+            user_send_mail(self,user_email)
+            return render(request, 'user_registrations/email_send.html')
+        
+class SetPassword(View):
+
+    def get(self, request):
+        """
+        Check if authorized to reset password.
+        Return reset password template
+        """
+        form = ConfirmPasswordForm()
+        token = request.GET.get('token')
+        if not token:
+            raise Http404('Page not found.')
+        token_obj = PasswordResetTokens.objects.filter(token=token)
+        import pdb; pdb.set_trace()
+        if not token_obj:
+            raise Http404('Fake token supplied.')
+        # tz = pytz.timezone("UTC")
+        # if tz.localize(datetime.now(), is_dst=None) > token_obj[0].expired_time:
+        #     raise Http404('Token Expired. Try again')
+        return render(request, 'user_registrations/set_password.html', {'form': form, 'token': token})
+
+    def post(self, request):
+        """
+        Save new password and redirect to Login
+        """
+        import pdb; pdb.set_trace()
+        form = ConfirmPasswordForm(request.POST)
+        token = request.GET.get('token')
+        if not token:
+            raise Http404('Tocken not found.')
+        if not form.is_valid():
+            import pdb; pdb.set_trace()
+            return render(request, 'user_registrations/set_password.html', {'form': form, 'token': token, 'errors': form.errors})
+        token_obj = PasswordResetTokens.objects.filter(token=token)
+        if not token_obj:
+            raise Http404('Fake token supplied.')
+        password_1 = form.cleaned_data.get('password_1')
+        user = token_obj[0].user
+        user.set_password(password_1)
+        user.save()
+        token_obj[0].delete()
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+
+class FeesPayment(View):
+
+    def get(self,request):
+
+        form = FeesPaymentForm()
+        objects = request.user
+        import pdb; pdb.set_trace()
+        return render(request, 'user_registrations/fees_payment.html', {'form': form,'object':objects})

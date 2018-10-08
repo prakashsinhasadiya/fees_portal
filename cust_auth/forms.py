@@ -59,4 +59,41 @@ class SignupForm(forms.Form):
 
 class ResetPasswordForm(forms.Form):
     username = forms.CharField(label="User Name or Email", max_length=30, required=True, widget=forms.TextInput(
-        attrs={'class': "form-control", 'id': "User Name", 'placeholder': 'User Name'}))
+        attrs={'class': "form-control", 'id': "User Name", 'placeholder': 'User Name or Email'}))
+
+class ConfirmPasswordForm(forms.Form):
+
+    password_regex = RegexValidator(regex=r'^((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})',message="password must be entered in the format: 'one digit and one uppercase and one lowecase and special character.")
+    password_1 = forms.CharField(validators=[password_regex],max_length=20, widget=forms.PasswordInput(attrs={'class': "form-control",'id':'password_1','placeholder':'Password'}))
+    password_2 = forms.CharField(validators=[password_regex],max_length=20, widget=forms.PasswordInput(attrs={'class': "form-control",'id':'password_2','placeholder':'Confirm Password'}))
+
+    def clean(self):
+        password_2 = self.cleaned_data.get('password_2')
+        password_1 = self.cleaned_data.get('password_1')
+        if password_1 and password_2 and password_1 != password_2:
+            message = "Passwords do not match"
+            raise ValidationError(message)
+        return password_2
+
+class FeesPaymentForm(forms.Form):
+
+    institute = forms.CharField(label="Institute", max_length=30, required=True, widget=forms.TextInput(
+        attrs={'class': "form-control", 'id': "institute", 'placeholder': 'Institiute','readonly':'readonly','value':request.user.institute}))
+    
+    branch = forms.CharField(label="branch", max_length=30, required=True, widget=forms.TextInput(
+        attrs={'class': "form-control", 'id': "branch", 'placeholder': 'Branch','readonly':'readonly'}))
+
+    enrollment = forms.CharField(label="enrollment", max_length=30, required=True, widget=forms.TextInput(
+        attrs={'class': "form-control", 'id': "enrollment", 'placeholder': 'Enrollment','readonly':'readonly'}))
+
+    FEES_CHOICES = (
+    ('admission','ADMISSION'),
+    ('exam', 'EXAM'),
+    ('hostel','HOSTEL'),
+    ('transportation','TRANSPORTATION'),
+    )
+    
+    amount_type = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple( attrs={'class': "form-control", 'id': "amount_type", 'placeholder': 'Amount_Type'}),
+                                             choices=FEES_CHOICES)
+
+    amoun_value = forms.FloatField(widget=forms.NumberInput(attrs={'id': 'float_value', 'readonly':'readonly'}))

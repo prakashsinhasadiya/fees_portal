@@ -89,3 +89,8 @@ class StudentProfile(TimeStampedModel):
     address = models.CharField(max_length=15)
 
     # is_active = models.BooleanField(default=True)
+
+
+class PasswordResetTokens(TimeStampedModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_token')
+    token = models.CharField("Tocken ID", max_length=60, null=False, blank=False)
