@@ -4,27 +4,30 @@ from django.views import View
 from django.shortcuts import render
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render
-from cust_auth.forms import LoginForm, SignupForm,ResetPasswordForm,ConfirmPasswordForm,FeesPaymentForm
+from cust_auth.forms import LoginForm, SignupForm, ResetPasswordForm, ConfirmPasswordForm, FeesPaymentForm
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.shortcuts import redirect
 from django.core.mail import send_mail
 from django.urls import reverse
-from cust_auth.models import InstituteBranch,StudentProfile,PasswordResetTokens
+from cust_auth.models import InstituteBranch, InstituteFees, StudentProfile, PasswordResetTokens
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse, HttpResponse
 import json
 import uuid
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-
+import requests
+import paypalrestsdk
+from paypalrestsdk import Payment
 
 # Create your views here.
 
 fess_payment_url = settings.FEES_PAYMENT or '/admin'
 login_redirect_url = settings.LOGIN_URL or ''
+
 
 class Login(View):
 
@@ -41,7 +44,8 @@ class Login(View):
         """
         Login user and redirect to Profile
         """
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
         form = LoginForm()
         login_form = LoginForm(request.POST)
         if not login_form.is_valid():
@@ -71,20 +75,31 @@ class Signup(View):
             return redirect(login_redirect_url)
         form = SignupForm()
         return render(request, 'user_registrations/signup.html', {'form': form})
+
     def post(self, request):
         """
         Signup and redirect to Profile
         """
         studentprofile_form = SignupForm(request.POST)
         if studentprofile_form.is_valid():
+            import pdb
+            pdb.set_trace()
+            password_1 = studentprofile_form.cleaned_data.get('password_1')
+            password_2 = studentprofile_form.cleaned_data.get('password_2')
+            if password_1 and password_2 and password_1 != password_2:
+                message = "Passwords do not match"
+                raise ValidationError(message)
             username = studentprofile_form.cleaned_data.get('username')
             try:
                 user, created = User.objects.get_or_create(username=username)
                 if created:
-                    password_1 = studentprofile_form.cleaned_data.get('password_1')
+                    password_1 = studentprofile_form.cleaned_data.get(
+                        'password_1')
                     email = studentprofile_form.cleaned_data.get('email')
-                    first_name = studentprofile_form.cleaned_data.get('first_name')
-                    last_name = studentprofile_form.cleaned_data.get('last_name')
+                    first_name = studentprofile_form.cleaned_data.get(
+                        'first_name')
+                    last_name = studentprofile_form.cleaned_data.get(
+                        'last_name')
                     user.set_password(password_1)
                     user.first_name = first_name
                     user.last_name = last_name
@@ -93,13 +108,15 @@ class Signup(View):
                     mobile = studentprofile_form.cleaned_data.get('mobile')
                     dob = studentprofile_form.cleaned_data.get('dob')
                     address = studentprofile_form.cleaned_data.get('address')
-                    institute = studentprofile_form.cleaned_data.get('institute')
+                    institute = studentprofile_form.cleaned_data.get(
+                        'institute')
                     branch = studentprofile_form.cleaned_data.get('branch')
                     gender = studentprofile_form.cleaned_data.get('gender')
-                    enrollment = studentprofile_form.cleaned_data.get('enrollment')
+                    enrollment = studentprofile_form.cleaned_data.get(
+                        'enrollment')
                     course = studentprofile_form.cleaned_data.get('course')
-                    import pdb;pdb.set_trace()
-                    student_profile, student_profile_create = StudentProfile.objects.get_or_create(user=user)
+                    student_profile, student_profile_create = StudentProfile.objects.get_or_create(
+                        user=user)
                     student_profile.mobile = mobile
                     student_profile.address = address
                     student_profile.dob = dob
@@ -120,9 +137,11 @@ class Signup(View):
         else:
             return render(request, 'user_registrations/signup.html', {'errors': studentprofile_form.errors, 'form': studentprofile_form})
 
+
 def logoutuser(request):
     logout(request)
     return redirect(login_redirect_url)
+
 
 @csrf_exempt
 def get_branch(request):
@@ -130,25 +149,27 @@ def get_branch(request):
     records = []
     institute_id = request.POST.get('institute')
     branches = InstituteBranch.objects.filter(institute_name_id=institute_id)
-    for branch in branches.values('id','name'):
+    for branch in branches.values('id', 'name'):
         records.append(branch)
     return JsonResponse({'status': 'success', 'response': json.dumps(records)})
     # branches = {'id':data.values('id'),'name':data.values('name')}
     # for branch in branches:
 
+
 class ResetPassword(View):
 
-    def get(self,request):
+    def get(self, request):
         form = ResetPasswordForm()
         return render(request, 'user_registrations/reset_password.html', {'form': form})
 
-    def  post(self,request):
+    def post(self, request):
 
         reset_password_form = ResetPasswordForm(request.POST)
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
         if not reset_password_form.is_valid():
             return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': reset_password_form.errors})
-       
+
         def user_send_mail(self, user):
 
             token_obj = PasswordResetTokens.objects.create(
@@ -162,21 +183,23 @@ class ResetPassword(View):
                 'user': user[0],
                 'url': url,
             })
-            res = send_mail('Password Reset', message, settings.FROM_EMAIL, [user[0].email], fail_silently=False)
+            res = send_mail('Password Reset', message, settings.FROM_EMAIL, [
+                            user[0].email], fail_silently=False)
 
         username = reset_password_form.cleaned_data.get('username')
         user_email = User.objects.filter(email=username)
         if not user_email:
-            user= User.objects.filter(username=username)
+            user = User.objects.filter(username=username)
             if not user:
                 return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': {'general_error': 'User doesnot exist.'}})
             else:
-                user_send_mail(self,user)
+                user_send_mail(self, user)
                 return render(request, 'user_registrations/email_send.html')
         else:
-            user_send_mail(self,user_email)
+            user_send_mail(self, user_email)
             return render(request, 'user_registrations/email_send.html')
-        
+
+
 class SetPassword(View):
 
     def get(self, request):
@@ -189,7 +212,8 @@ class SetPassword(View):
         if not token:
             raise Http404('Page not found.')
         token_obj = PasswordResetTokens.objects.filter(token=token)
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
         if not token_obj:
             raise Http404('Fake token supplied.')
         # tz = pytz.timezone("UTC")
@@ -201,13 +225,15 @@ class SetPassword(View):
         """
         Save new password and redirect to Login
         """
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
         form = ConfirmPasswordForm(request.POST)
         token = request.GET.get('token')
         if not token:
             raise Http404('Tocken not found.')
         if not form.is_valid():
-            import pdb; pdb.set_trace()
+            import pdb
+            pdb.set_trace()
             return render(request, 'user_registrations/set_password.html', {'form': form, 'token': token, 'errors': form.errors})
         token_obj = PasswordResetTokens.objects.filter(token=token)
         if not token_obj:
@@ -220,13 +246,121 @@ class SetPassword(View):
         return HttpResponseRedirect(reverse('login'))
 
 
-
-
 class FeesPayment(View):
 
-    def get(self,request):
-
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect(login_redirect_url)
         form = FeesPaymentForm()
         objects = request.user
-        import pdb; pdb.set_trace()
-        return render(request, 'user_registrations/fees_payment.html', {'form': form,'object':objects})
+        form['institute'].initial = objects.studentprofile.branch.institute_name
+        form['branch'].initial = objects.studentprofile.branch
+        form['enrollment'].initial = objects.studentprofile.enrollment
+        return render(request, 'user_registrations/fees_payment.html', {'form': form, 'object': objects})
+
+    def post(self, request):
+
+        fees_types = InstituteFees.objects.filter(
+            fees_type__in=request.POST.getlist('fees_type'))
+        fees_list = []
+        total_amount = 0
+        import pdb
+        pdb.set_trace()
+        for fees_type in fees_types:
+            fees_list_dict = {}
+            fees_list_dict['name'] = fees_type.fees_type
+            fees_list_dict['price'] = fees_type.amount
+            fees_list_dict['currency'] = "USD"
+            fees_list_dict["quantity"] = 1
+            fees_list.append(fees_list_dict)
+            total_amount += fees_type.amount
+        total_amount_value = {'total': total_amount, 'currency': 'USD'}
+
+        paypalrestsdk.configure({
+            "mode": "sandbox",  # sandbox or live
+            "client_id": "AWNIRUxctIc8ELjCrYLK8Zbv9L0EqL0aLplmLHpXPaPT_BVXINg66096i4jIO6i448h2fH-7sdaaiAtE",
+            "client_secret": "ECnA0hUuNZShemfJq5sD-UAfDUuEbr1i5j6RQcHdZJZiDkrYMTo1S6kA6E_OEwA_zX8FMEz4-57TfOaN"})
+
+        payment = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal"},
+            "redirect_urls": {
+                "return_url": "http://localhost:8000/payment_return_response",
+                "cancel_url": "http://localhost:8000/"},
+            "transactions": [{
+                "item_list": {"items": fees_list},
+                "amount": total_amount_value,
+                "description": "This is the payment transaction description."}]})
+        if payment.create():
+            print("Payment created successfully")
+
+            for link in payment.links:
+                if link.rel == "approval_url":
+                    # Convert to str to avoid Google App Engine Unicode issue
+                    # https://github.com/paypal/rest-api-sdk-python/pull/58
+                    approval_url = str(link.href)
+                    print("Redirect for approval: %s" % (approval_url))
+                    return HttpResponseRedirect(approval_url)
+        else:
+            import pdb
+            pdb.set_trace()
+            print(payment.error)
+            print(response.text)
+
+
+@csrf_exempt
+def amount_value(request):
+
+    records = {}
+    institute_id = request.POST.get('institute')
+    branch_name = request.POST.get('branch')
+    try:
+        for branc_institiute_value in InstituteBranch.objects.filter(name=branch_name).values('id', 'institute_name_id'):
+            records.update(branc_institiute_value)
+        amount_object = InstituteFees.objects.filter(
+            branch_id=branc_institiute_value.get('id'), fees_type=request.POST.get('value'))
+        if amount_object:
+            for amount_obj in amount_object:
+                amount = amount_obj.amount
+                result = dict(request.POST)
+                if request.POST.get('selected') == 'true':
+                    result['amount'] = abs(
+                        amount + float(request.POST.get('amount_value')))
+                else:
+                    result['amount'] = abs(
+                        amount - float(request.POST.get('amount_value')))
+                return JsonResponse({'status': 'success', 'response': json.dumps(result)})
+        else:
+            result = dict(request.POST)
+            result['error'] = 'this fees type are not exist'
+            return JsonResponse({'status': 'fail', 'response': json.dumps(result)})
+    except Exception:
+        result = dict(request.POST)
+        result['error'] = 'somthing wrong'
+        return JsonResponse({'status': 'fail', 'response': json.dumps(result)})
+
+
+class PaymentReturnResponse(View):
+
+    def get(self, request):
+
+        payment_id = request.GET.get('paymentId')
+        payer_id = request.GET.get('PayerID')
+
+        paypalrestsdk.configure({
+            "mode": "sandbox",  # sandbox or live
+            "client_id": "AWNIRUxctIc8ELjCrYLK8Zbv9L0EqL0aLplmLHpXPaPT_BVXINg66096i4jIO6i448h2fH-7sdaaiAtE",
+            "client_secret": "ECnA0hUuNZShemfJq5sD-UAfDUuEbr1i5j6RQcHdZJZiDkrYMTo1S6kA6E_OEwA_zX8FMEz4-57TfOaN"})
+        payment = Payment.find(payment_id)
+
+        import pdb
+        pdb.set_trace()
+        # if payment.execute({'payer_id':payer_id})
+        # form = FeesPaymentForm()
+        # objects = request.user
+        # form['institute'].initial = objects.studentprofile.branch.institute_name
+        # form['branch'].initial = objects.studentprofile.branch
+        # form['enrollment'].initial = objects.studentprofile.enrollment
+        # return render(request, 'user_registrations/fees_payment.html',
+        # {'form': form,'object':objects})

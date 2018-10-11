@@ -57,6 +57,7 @@ class SignupForm(forms.Form):
     
     course = forms.ChoiceField(choices=COURSE_CHOICES,widget=forms.Select(attrs={'class': "form-control",'id':"course",'placeholder': 'Course'}), required=True)
 
+
 class ResetPasswordForm(forms.Form):
     username = forms.CharField(label="User Name or Email", max_length=30, required=True, widget=forms.TextInput(
         attrs={'class': "form-control", 'id': "User Name", 'placeholder': 'User Name or Email'}))
@@ -78,7 +79,7 @@ class ConfirmPasswordForm(forms.Form):
 class FeesPaymentForm(forms.Form):
 
     institute = forms.CharField(label="Institute", max_length=30, required=True, widget=forms.TextInput(
-        attrs={'class': "form-control", 'id': "institute", 'placeholder': 'Institiute','readonly':'readonly','value':request.user.institute}))
+        attrs={'class': "form-control", 'id': "institute", 'placeholder': 'Institiute','readonly':'readonly'}))
     
     branch = forms.CharField(label="branch", max_length=30, required=True, widget=forms.TextInput(
         attrs={'class': "form-control", 'id': "branch", 'placeholder': 'Branch','readonly':'readonly'}))
@@ -92,8 +93,8 @@ class FeesPaymentForm(forms.Form):
     ('hostel','HOSTEL'),
     ('transportation','TRANSPORTATION'),
     )
-    
+
     amount_type = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple( attrs={'class': "form-control", 'id': "amount_type", 'placeholder': 'Amount_Type'}),
                                              choices=FEES_CHOICES)
 
-    amoun_value = forms.FloatField(widget=forms.NumberInput(attrs={'id': 'float_value', 'readonly':'readonly'}))
+    amount_value = forms.FloatField(widget=forms.NumberInput(attrs={'class': "form-control",'id': 'float_value','value':0.0,'placeholder': 'Total Amount'}))

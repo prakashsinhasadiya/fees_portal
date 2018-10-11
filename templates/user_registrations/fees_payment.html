@@ -10,7 +10,7 @@
         <div class="col-sm-5"/>
         <div class="main-login main-center">
             <h4 style="text-align: center;"><b>Fees Payment Form</b></h4>
-            <form class="text-center" id="userdetails" method="post">
+            <form class="text-center" id="fees_payment" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <div>
@@ -54,10 +54,19 @@
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.amount_type}}
-                            </span>
+                            <!-- <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span> -->
+                            <div class="checkbox">
+                                <label><input id="amount_type_1" name="fees_type" type="checkbox" value="admission">Admission</label>
+                            </div>
+                            <div class="checkbox">
+                                <label><input id="amount_type_2" name="fees_type" type="checkbox" value="exam">Exam</label>
+                            </div>
+                            <div class="checkbox">
+                                <label><input id="amount_type_4" name="fees_type" type="checkbox" value="hostel">Hostel</label>
+                            </div>
+                            <div class="checkbox">
+                                <label><input id="amount_type_3" name="fees_type" type="checkbox" value="transportation">TRANSPORTATION</label>
+                            </div>
                         </div>
                     </div>
                     {%if 'amount_type' in errors%}
@@ -76,128 +85,6 @@
                     {%if 'amount_value' in errors%}
                         <div class='alert alert-warning'>{{errors.amount_value}}</div>
                     {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.dob }}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'dob' in errors%}
-                        <div class='alert alert-warning'>{{errors.dob}}</div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.address}}
-                            </span>
-                        </div>
-                        {%if 'address' in errors%}
-                        <div class='alert alert-warning'>{{errors.address}}</div>
-                    {% endif %}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.institute}}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'institute' in errors%}
-                        <div class='alert alert-warning'>{{errors.institute}}</div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.branch}}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'branch' in errors%}
-                        <div class='alert alert-warning'>{{errors.branch}}</div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.course}}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'course' in errors%}
-                        <div class='alert alert-warning'>{{errors.course}}</div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.enrollment}}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'enrollment' in errors%}
-                        <div class='alert alert-warning'>{{errors.enrollment}}</div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.password_1}}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'password_1' in errors%}
-                        <div class='alert alert-warning'>{{errors.password_1}}</div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                            <span>
-                                {{form.password_2}}
-                            </span>
-                        </div>
-                    </div>
-                    {%if 'password_2' in errors%}
-                        <div class='alert alert-warning'>{{errors.password_2}}</div>
-                    {% endif %}
-                </div>
-                <div>
-                    <div>
-                    <div style="padding-right:  1px"> 
-                    <label class="radio-inline">
-
-                        <h4>Genders</h4>                               
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="gender" id="id_gender_0" value="M" required/>
-                                   Male
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="gender" id="id_gender_1" value="F" required/>
-                                   Female
-                        </label>
-                    </div>
-                    </div>  
                 </div>
                  {%if 'general_error' in errors%}
                     <div class='alert alert-warning'>{{errors.general_error}}</div>

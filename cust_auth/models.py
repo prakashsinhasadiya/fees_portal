@@ -50,9 +50,11 @@ class InstituteFees(TimeStampedModel):
     ('hostel','HOSTEL'),
     ('transportation','TRANSPORTATION'),
     )
+    class Meta:
+        unique_together = ("fees_type", "branch")
     
     branch = models.ForeignKey(InstituteBranch,on_delete=models.CASCADE,related_name='fees_branch')
-    fees_type = models.CharField(max_length=6, choices=FEES_CHOICES, default='admission')
+    fees_type = models.CharField(max_length=20, choices=FEES_CHOICES, default='admission')
     amount = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
@@ -94,3 +96,10 @@ class StudentProfile(TimeStampedModel):
 class PasswordResetTokens(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_token')
     token = models.CharField("Tocken ID", max_length=60, null=False, blank=False)
+
+# class FeesTransactionDetails(TimeStampedModel):
+
+#     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='student_transacction')
+#     amount =  models.FloatField()
+#     transaction_dump = models.CharField()
+#     
