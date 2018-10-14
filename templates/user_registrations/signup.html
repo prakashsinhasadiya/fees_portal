@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     {%if 'first_name' in errors%}
-                        <div class='alert alert-warning'>{{errors.first_name}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.first_name}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     {%if 'last_name' in errors%}
-                        <div class='alert alert-warning'>{{errors.last_name}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.last_name}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -48,33 +48,33 @@
                         </div>
                     </div>
                     {%if 'username' in errors%}
-                        <div class='alert alert-warning'>{{errors.username}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.username}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.email}}
                             </span>
                         </div>
                     </div>
                     {%if 'email' in errors%}
-                        <div class='alert alert-warning'>{{errors.email}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.email}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-mobile fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.mobile}}
                             </span>
                         </div>
                     </div>
                     {%if 'mobile' in errors%}
-                        <div class='alert alert-warning'>{{errors.mobile}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.mobile}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     {%if 'dob' in errors%}
-                        <div class='alert alert-warning'>{{errors.dob}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.dob}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -99,7 +99,7 @@
                             </span>
                         </div>
                         {%if 'address' in errors%}
-                        <div class='alert alert-warning'>{{errors.address}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.address}}</div>
                     {% endif %}
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                         </div>
                     </div>
                     {%if 'institute' in errors%}
-                        <div class='alert alert-warning'>{{errors.institute}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.institute}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -126,7 +126,7 @@
                         </div>
                     </div>
                     {%if 'branch' in errors%}
-                        <div class='alert alert-warning'>{{errors.branch}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.branch}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -139,7 +139,7 @@
                         </div>
                     </div>
                     {%if 'course' in errors%}
-                        <div class='alert alert-warning'>{{errors.course}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.course}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -152,33 +152,33 @@
                         </div>
                     </div>
                     {%if 'enrollment' in errors%}
-                        <div class='alert alert-warning'>{{errors.enrollment}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.enrollment}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-lock fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.password_1}}
                             </span>
                         </div>
                     </div>
                     {%if 'password_1' in errors%}
-                        <div class='alert alert-warning'>{{errors.password_1}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.password_1}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-lock fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.password_2}}
                             </span>
                         </div>
                     </div>
                     {%if 'password_2' in errors%}
-                        <div class='alert alert-warning'>{{errors.password_2}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.password_2}}</div>
                     {% endif %}
                 </div>
                 <div>
@@ -200,10 +200,10 @@
                     </div>  
                 </div>
                  {%if 'general_error' in errors%}
-                    <div class='alert alert-warning'>{{errors.general_error}}</div>
+                    <div class='alert alert-warning custom-error'>{{errors.general_error}}</div>
                 {% endif %}
                 <div class="form-group">
-                    <input type="submit" name="submit" id="submit" class="form-submit submit" value="Sign up"/>
+                    <input type="submit" name="submit" id="submit" class="form-submit btn btn-info submit" value="Sign up"/>
                 </div>           
                 <div class="text-center">
                     <span>

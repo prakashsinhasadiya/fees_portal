@@ -20,6 +20,11 @@ $(document).ready(function() {
       })
   
 } ) 
+
+$(".custome-name").focusin(function(){
+    debugger
+    $(".custom-error").remove();
+});
   $("#amount_type_4,#amount_type_3,#amount_type_2,#amount_type_1").click(function (event) {
     var value = this.value
     var selected = this.checked

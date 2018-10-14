@@ -43,8 +43,6 @@ class Login(View):
         """
         Login user and redirect to Profile
         """
-        import pdb
-        pdb.set_trace()
         form = LoginForm()
         login_form = LoginForm(request.POST)
         if not login_form.is_valid():
@@ -81,8 +79,6 @@ class Signup(View):
         """
         studentprofile_form = SignupForm(request.POST)
         if studentprofile_form.is_valid():
-            import pdb
-            pdb.set_trace()
             password_1 = studentprofile_form.cleaned_data.get('password_1')
             password_2 = studentprofile_form.cleaned_data.get('password_2')
             if password_1 and password_2 and password_1 != password_2:
@@ -147,7 +143,11 @@ def get_branch(request):
 
     records = []
     institute_id = request.POST.get('institute')
-    branches = InstituteBranch.objects.filter(institute_name_id=institute_id)
+    try:
+        branches = InstituteBranch.objects.filter(institute_name_id=institute_id)
+    except Exception:
+        record['error'] = 'Institute have no any branch'
+        return JsonResponse({'status': 'fail', 'response': json.dumps(records)})
     for branch in branches.values('id', 'name'):
         records.append(branch)
     return JsonResponse({'status': 'success', 'response': json.dumps(records)})
@@ -164,8 +164,6 @@ class ResetPassword(View):
     def post(self, request):
 
         reset_password_form = ResetPasswordForm(request.POST)
-        import pdb
-        pdb.set_trace()
         if not reset_password_form.is_valid():
             return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': reset_password_form.errors})
 
@@ -211,8 +209,6 @@ class SetPassword(View):
         if not token:
             raise Http404('Page not found.')
         token_obj = PasswordResetTokens.objects.filter(token=token)
-        import pdb
-        pdb.set_trace()
         if not token_obj:
             raise Http404('Fake token supplied.')
         # tz = pytz.timezone("UTC")
