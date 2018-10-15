@@ -10,8 +10,8 @@ from datetime import datetime
 
 class LoginForm(forms.Form):
     username = forms.CharField(
-        max_length=30, required=True, widget=forms.TextInput(attrs={'class': "form-control", 'id': "username", 'placeholder': 'User Name'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control",'id':'password','placeholder':'Password'}))
+        max_length=30, required=True, widget=forms.TextInput(attrs={'class': "form-control custome-name", 'id': "username", 'placeholder': 'User Name'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control custome-name",'id':'password','placeholder':'Password'}))
 
 
 class SignupForm(forms.Form):
@@ -79,13 +79,13 @@ class ConfirmPasswordForm(forms.Form):
 class FeesPaymentForm(forms.Form):
 
     institute = forms.CharField(label="Institute", max_length=30, required=True, widget=forms.TextInput(
-        attrs={'class': "form-control", 'id': "institute", 'placeholder': 'Institiute','readonly':'readonly'}))
+        attrs={'class': "form-control custome-name", 'id': "institute", 'placeholder': 'Institiute','readonly':'readonly'}))
     
     branch = forms.CharField(label="branch", max_length=30, required=True, widget=forms.TextInput(
-        attrs={'class': "form-control", 'id': "branch", 'placeholder': 'Branch','readonly':'readonly'}))
+        attrs={'class': "form-control custome-name", 'id': "branch", 'placeholder': 'Branch','readonly':'readonly'}))
 
     enrollment = forms.CharField(label="enrollment", max_length=30, required=True, widget=forms.TextInput(
-        attrs={'class': "form-control", 'id': "enrollment", 'placeholder': 'Enrollment','readonly':'readonly'}))
+        attrs={'class': "form-control custome-name", 'id': "enrollment", 'placeholder': 'Enrollment','readonly':'readonly'}))
 
     FEES_CHOICES = (
     ('admission','ADMISSION'),
@@ -94,7 +94,7 @@ class FeesPaymentForm(forms.Form):
     ('transportation','TRANSPORTATION'),
     )
 
-    amount_type = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple( attrs={'class': "form-control", 'id': "amount_type", 'placeholder': 'Amount_Type'}),
+    amount_type = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple( attrs={'class': "form-control custome-name", 'id': "amount_type", 'placeholder': 'Amount_Type'}),
                                              choices=FEES_CHOICES)
 
-    amount_value = forms.FloatField(widget=forms.NumberInput(attrs={'class': "form-control",'id': 'float_value','value':0.0,'placeholder': 'Total Amount'}))
+    amount_value = forms.FloatField(widget=forms.NumberInput(attrs={'class': "form-control custome-name",'id': 'float_value','value':0.0,'placeholder': 'Total Amount'}))

@@ -15,41 +15,41 @@
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-     fa" aria-hidden="true"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.username}}
                             </span>
                         </div>
                     </div>
                     {%if 'username' in errors%}
-                        <div class='alert alert-warning'>{{errors.username}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.username}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-lock fa" aria-hidden="true"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
                             <span>
                                 {{form.password}}
                             </span>
                         </div>
                     </div>
                     {%if 'password' in errors%}
-                        <div class='alert alert-warning'>{{errors.password}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.password}}</div>
                     {% endif %}
                 </div>
                 {%if 'general_error' in errors%}
-                    <div class='alert alert-warning'>{{errors.general_error}}</div>
+                    <div class='alert alert-warning custom-error'>{{errors.general_error}}</div>
                 {% endif %}
                 <div class="form-group">
-                    <input type="submit" name="submit" id="submit" class="form-submit btn btn-info submit" value="Log in"/>
+                    <input type="submit" name="submit" id="submit" class="form-submit btn btn-info submit submit" value="Log in"/>
                 </div>
                 <div class="text-center">
                     <span>
                         You have don't have account?
                     </span>
                     <a href='{% url "signup" %}'>
-                        Sign Up
+                        Login
                     </a><br/>
                     <span>
                         Rese your password?

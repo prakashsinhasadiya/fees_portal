@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     {%if 'institute' in errors%}
-                        <div class='alert alert-warning'>{{errors.institute}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.institute}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     {%if 'branch' in errors%}
-                        <div class='alert alert-warning'>{{errors.branch}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.branch}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -48,29 +48,22 @@
                         </div>
                     </div>
                     {%if 'enrollment' in errors%}
-                        <div class='alert alert-warning'>{{errors.enrollment}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.enrollment}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div>
                         <div class="input-group">
                             <!-- <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span> -->
+                            {% for fees_type in fees_type_object %}
                             <div class="checkbox">
-                                <label><input id="amount_type_1" name="fees_type" type="checkbox" value="admission">Admission</label>
+                                <label><input id="fees_type_id" name="fees_type" type="checkbox" value={{fees_type.id}}>{{fees_type.fees_type}}</label>
                             </div>
-                            <div class="checkbox">
-                                <label><input id="amount_type_2" name="fees_type" type="checkbox" value="exam">Exam</label>
-                            </div>
-                            <div class="checkbox">
-                                <label><input id="amount_type_4" name="fees_type" type="checkbox" value="hostel">Hostel</label>
-                            </div>
-                            <div class="checkbox">
-                                <label><input id="amount_type_3" name="fees_type" type="checkbox" value="transportation">TRANSPORTATION</label>
-                            </div>
+                            {%endfor%}
                         </div>
                     </div>
                     {%if 'amount_type' in errors%}
-                        <div class='alert alert-warning'>{{errors.amount_type}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.amount_type}}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -83,14 +76,17 @@
                         </div>
                     </div>
                     {%if 'amount_value' in errors%}
-                        <div class='alert alert-warning'>{{errors.amount_value}}</div>
+                        <div class='alert alert-warning custom-error'>{{errors.amount_value}}</div>
                     {% endif %}
                 </div>
-                 {%if 'general_error' in errors%}
-                    <div class='alert alert-warning'>{{errors.general_error}}</div>
+                {%if 'general_error' in errors%}
+                    <div class='alert alert-warning custom-error'>{{errors.general_error}}</div>
+                {% endif %}
+                {%if general_error%}
+                    <div class='alert alert-warning custom-error'>{{general_error}}</div>
                 {% endif %}
                 <div class="form-group">
-                    <input type="submit" name="submit" id="submit" class="form-submit submit " value="Pay Now"/>
+                    <input type="submit" name="submit" id="submit" class="form-submit submit" value="Pay Now"/>
                 </div>           
          </form>
       </div>

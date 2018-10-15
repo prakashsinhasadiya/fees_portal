@@ -19,15 +19,14 @@ $(document).ready(function() {
         }
       })
   
-} ) 
-
-$(".custome-name").focusin(function(){
+} )
+  $(".custome-name").focusin(function(){
     debugger
     $(".custom-error").remove();
 });
-  $("#amount_type_4,#amount_type_3,#amount_type_2,#amount_type_1").click(function (event) {
-    var value = this.value
-    var selected = this.checked
+  $(".checkbox").on("click",function (event) {
+    var value = $(this).find('#fees_type_id').attr('value')
+    var selected = $(this).find('#fees_type_id')[0].checked
     var branch = $("#branch").attr('value')
     var amount_value = $('#float_value').attr('value')
     data = {'value':value,'selected':selected,'branch':branch,'amount_value':amount_value}
@@ -43,7 +42,6 @@ $(".custome-name").focusin(function(){
           }
         else{
             var result = JSON.parse(response['response']);
-            debugger;
             $('#float_value').after().text(result['error']);
         }
       }

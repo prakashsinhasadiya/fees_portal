@@ -43,6 +43,8 @@ class Login(View):
         """
         Login user and redirect to Profile
         """
+        import pdb
+        pdb.set_trace()
         form = LoginForm()
         login_form = LoginForm(request.POST)
         if not login_form.is_valid():
@@ -79,6 +81,8 @@ class Signup(View):
         """
         studentprofile_form = SignupForm(request.POST)
         if studentprofile_form.is_valid():
+            import pdb
+            pdb.set_trace()
             password_1 = studentprofile_form.cleaned_data.get('password_1')
             password_2 = studentprofile_form.cleaned_data.get('password_2')
             if password_1 and password_2 and password_1 != password_2:
@@ -143,11 +147,7 @@ def get_branch(request):
 
     records = []
     institute_id = request.POST.get('institute')
-    try:
-        branches = InstituteBranch.objects.filter(institute_name_id=institute_id)
-    except Exception:
-        record['error'] = 'Institute have no any branch'
-        return JsonResponse({'status': 'fail', 'response': json.dumps(records)})
+    branches = InstituteBranch.objects.filter(institute_name_id=institute_id)
     for branch in branches.values('id', 'name'):
         records.append(branch)
     return JsonResponse({'status': 'success', 'response': json.dumps(records)})
@@ -164,6 +164,8 @@ class ResetPassword(View):
     def post(self, request):
 
         reset_password_form = ResetPasswordForm(request.POST)
+        import pdb
+        pdb.set_trace()
         if not reset_password_form.is_valid():
             return render(request, 'user_registrations/reset_password.html', {'form': reset_password_form, 'errors': reset_password_form.errors})
 
@@ -209,6 +211,8 @@ class SetPassword(View):
         if not token:
             raise Http404('Page not found.')
         token_obj = PasswordResetTokens.objects.filter(token=token)
+        import pdb
+        pdb.set_trace()
         if not token_obj:
             raise Http404('Fake token supplied.')
         # tz = pytz.timezone("UTC")
@@ -250,17 +254,32 @@ class FeesPayment(View):
         objects = request.user
         form['institute'].initial = objects.studentprofile.branch.institute_name
         form['branch'].initial = objects.studentprofile.branch
+        branch = objects.studentprofile.branch
         form['enrollment'].initial = objects.studentprofile.enrollment
-        return render(request, 'user_registrations/fees_payment.html', {'form': form, 'object': objects})
+        fees_type_object= InstituteFees.objects.filter(branch=branch)
+        return render(request, 'user_registrations/fees_payment.html', {'form': form, 'object': objects,'fees_type_object':fees_type_object})
 
     def post(self, request):
 
+        form = FeesPaymentForm()
+        objects = request.user
+        form['institute'].initial = objects.studentprofile.branch.institute_name
+        form['branch'].initial = objects.studentprofile.branch
+        branch = objects.studentprofile.branch
+        form['enrollment'].initial = objects.studentprofile.enrollment
+        fees_type_object= InstituteFees.objects.filter(branch=branch)
+        if request.POST.get('fees_type'):
+            record = FeesTransactionDetails.objects.filter(student_id=request.user.id,payment_fees_type=request.POST.get('fees_type'))
+            if record:
+                error = 'nothing to pay for this user'
+                return render(request, 'user_registrations/fees_payment.html', {'form': form, 'object': objects,'fees_type_object':fees_type_object,'general_error':error})
+        else:
+            error = 'plaease select any fees'
+            return render(request, 'user_registrations/fees_payment.html', {'form': form, 'object': objects,'fees_type_object':fees_type_object,'general_error':error})
         fees_types = InstituteFees.objects.filter(
-            fees_type__in=request.POST.getlist('fees_type'))
+            id__in=request.POST.getlist('fees_type'))
         fees_list = []
         total_amount = 0
-        import pdb
-        pdb.set_trace()
         for fees_type in fees_types:
             fees_list_dict = {}
             fees_list_dict['name'] = fees_type.fees_type
@@ -292,16 +311,12 @@ class FeesPayment(View):
 
             for link in payment.links:
                 if link.rel == "approval_url":
-                    # Convert to str to avoid Google App Engine Unicode issue
-                    # https://github.com/paypal/rest-api-sdk-python/pull/58
                     approval_url = str(link.href)
                     print("Redirect for approval: %s" % (approval_url))
                     return HttpResponseRedirect(approval_url)
         else:
-            import pdb
-            pdb.set_trace()
-            print(payment.error)
-            print(response.text)
+            return HttpResponseRedirect(reverse('payment_wrong'))
+
 
 
 @csrf_exempt
@@ -314,7 +329,7 @@ def amount_value(request):
         for branc_institiute_value in InstituteBranch.objects.filter(name=branch_name).values('id', 'institute_name_id'):
             records.update(branc_institiute_value)
         amount_object = InstituteFees.objects.filter(
-            branch_id=branc_institiute_value.get('id'), fees_type=request.POST.get('value'))
+            branch_id=branc_institiute_value.get('id'), id=request.POST.get('value'))
         if amount_object:
             for amount_obj in amount_object:
                 amount = amount_obj.amount
@@ -351,27 +366,31 @@ class PaymentReturnResponse(View):
         print('aaaaaaaaaaaaaa')
         import pdb; pdb.set_trace()
         if payment.execute({'payer_id':payer_id}):
-            print('bbbbbbbbbbbbbbbbb')
-            import pdb; pdb.set_trace()
-            user_id = request.user.id
+            user_id = request.user
             payment_id = payment.id
             payer_id = payer_id
-            time = payment.create_time
             status = payment['state']
             for pymt in payment['transactions']:
                 total_amount = pymt['amount']['total']
+                for amt in pymt['related_resources']:
+                    subtotal = amt['sale']['amount']['details']['subtotal']
                 for itm in pymt['item_list']['items']:
                     fees_type = itm['name']
                     import pdb; pdb.set_trace()
-                    user = FeesTransactionDetails.objects.create(student=user_id,amount=total_amount,status=status,payment_fees_type=fees_type,payment_id=payment_id,payer_id=payer_id)
+                    user = FeesTransactionDetails.objects.create(student=user_id,amount=subtotal,payment_response=json.dumps(payment.to_dict()),status=status,payment_id=payment_id,payer_id=payer_id)
+                    if user:
+                        return HttpResponseRedirect(reverse('payment_success'))
         else:
-            print('assssdasfdasfafasf')
-            import pdb; pdb.set_trace()
-        # if payment.execute({'payer_id':payer_id})
-        # form = FeesPaymentForm()
-        # objects = request.user
-        # form['institute'].initial = objects.studentprofile.branch.institute_name
-        # form['branch'].initial = objects.studentprofile.branch
-        # form['enrollment'].initial = objects.studentprofile.enrollment
-        # return render(request, 'user_registrations/fees_payment.html',
-        # {'form': form,'object':objects})
+            return HttpResponseRedirect(reverse('payment_wrong'))
+
+class PaymentWrong(View):
+
+     def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'user_registrations/payment_wrong.html')
+
+class PaymentSuccess(View):
+
+     def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'user_registrations/payment_success.html')
